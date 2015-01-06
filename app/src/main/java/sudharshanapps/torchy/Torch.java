@@ -26,9 +26,18 @@ public class Torch extends Activity {
         //Check Camera or Device status
         attributes.checkCameraStatus(Torch.this);
 
-        //Creating Dialog
-        if(!attributes.getCameraStatus())
-        attributes.createDialog(Torch.this);
+        //Checking whether Camera supports flash or not
+        if(!attributes.getCameraStatus()) {
+            //Does not support flash
+
+            //Inform user that it is not supported by device and close the app
+            attributes.createDialog(Torch.this);
+            return;
+        }else{
+            //Supports flash
+
+            attributes.setFlashOn(Torch.this);
+        }
 
 
     }

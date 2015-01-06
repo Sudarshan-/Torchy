@@ -1,16 +1,20 @@
 package sudharshanapps.torchy;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.widget.ImageButton;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Context;
 
 import java.util.List;
+import java.util.logging.Handler;
 
 //This class is a place holder for all attributes which we use for this app
 class Attributes{
@@ -19,7 +23,7 @@ class Attributes{
     private ImageButton button;
 
     //Holds reference to Camera Device
-    private CameraDevice cameraDevice;
+    private CameraManager cameraManager;
 
     //Checking whether torch is on or not
     private boolean isFlashOn;
@@ -33,7 +37,6 @@ class Attributes{
     //Assigning reference to Image
     public void setImageButton(ImageButton button){
         this.button=button;
-
     }
 
     //Returning Image reference
@@ -41,10 +44,10 @@ class Attributes{
         return button;
     }
 
-    //Returning Camera Reference
-    public CameraDevice getCameraDevice(){
-        return cameraDevice;
-    }
+    /*//Returning Camera Reference
+    public CameraManager getCameraDevice(){
+        return cameraManager;
+    }*/
 
     //Returning torch status
     public boolean getFlashStatus(){
@@ -89,11 +92,38 @@ class Attributes{
 
         //Checking Features of Device
         hasFlash = activity.getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-
     }
 
-    public void setFlashOn(){
-         
+    public void setFlashOn(Activity activity){
+
+        //Obtain current camera Manager reference
+        cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+
+        try {
+
+            String[] cameraIDList = cameraManager.getCameraIdList();
+
+            for(String camera : cameraIDList){
+                cameraManager.openCamera(camera,new CameraDevice.StateCallback() {
+                    @Override
+                    public void onOpened(CameraDevice camera) {
+                        //camera.createCaptureRequest()
+                    }
+
+                    @Override
+                    public void onDisconnected(CameraDevice camera) {
+
+                    }
+
+                    @Override
+                    public void onError(CameraDevice camera, int error) {
+
+                    }
+                },null);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
